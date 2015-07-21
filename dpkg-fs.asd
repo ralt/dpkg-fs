@@ -11,7 +11,7 @@
   :version "0.1"
   :author "Florian Margaine <florian@margaine.com>"
   :license "MIT License"
-  :depends-on (:cl-fuse-meta-fs :cl-ppcre :log4cl)
+  :depends-on (:cl-fuse-meta-fs :cl-ppcre :log4cl :cl-annot)
   :components ((:module "src"
                 :components
                 ((:file "dpkg-fs"))))

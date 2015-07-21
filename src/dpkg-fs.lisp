@@ -1,9 +1,11 @@
 (in-package :cl-user)
 (defpackage dpkg-fs
-  (:use :cl)
-  (:export :main :disable-debugger))
+  (:use :cl))
 (in-package :dpkg-fs)
 
+(annot:enable-annot-syntax)
+
+@export
 (defun disable-debugger ()
   (labels
       ((exit (c h)
@@ -20,6 +22,7 @@
   (log:debug "is-directory: ~A" split-path)
   t)
 
+@export
 (defun main (args)
   (log:config :debug)
   (log:debug "fuse-run")
@@ -29,11 +32,7 @@
 
 
 (defun get-packages ()
-  (loop
-     :for line in (nthcdr 5
-                          (cl-ppcre:split #\Newline
-                                          (let ((s (make-string-output-stream)))
-                                            (uiop:run-program "dpkg-query -l"
-                                                              :output s)
-                                            (get-output-stream-string s))))
-     :collect (first (cl-ppcre:split ":" (second (cl-ppcre:split "\\s+" line))))))
+  (cl-ppcre:split " "
+                  (let ((s (make-string-output-stream)))
+                    (uiop:run-program "dpkg-query --showformat='${Package} ' --show" :output s)
+                    (get-output-stream-string s))))
