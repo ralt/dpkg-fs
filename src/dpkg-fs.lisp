@@ -17,25 +17,6 @@
          (sb-ext:exit)))
     (setf *debugger-hook* #'exit)))
 
-(defmethod dir-content (path (type (eql :root)))
-  (unless path
-    (return-from dir-content '("installed" "remote" "sync")))
-  (let ((folder (first path)))
-    (cond ((string= folder "installed") (dir-content (rest path) :installed))
-          ((string= folder "remote") (dir-content (rest path) :remote)))))
-
-(defmethod dir-content (path (type (eql :installed)))
-  (unless path
-    (return-from dir-content (installed-packages)))
-  (when (package-exists (first path))
-    (dir-content (rest path) :package-info)))
-
-(defmethod dir-content (path (type (eql :package-info)))
-  (unless path
-    (return-from dir-content '("name" "version" "desc"))))
-
-(defmethod dir-content (path (type (eql :remote))))
-
 (defun directory-content (split-path &optional (type :root))
   (log:debug "directory-content: ~A" split-path)
   (dir-content split-path type))
@@ -56,7 +37,7 @@
 
 (defun symlink-target (split-path)
   (log:debug "symlink-target: ~A" split-path)
-  "")
+  nil)
 
 @export
 (defun main (args)
@@ -68,15 +49,3 @@
                     :file-read 'file-read
                     :file-size 'file-size
                     :symlink-target 'symlink-target))
-
-(defun installed-packages ()
-  (cl-ppcre:split " "
-                  (let ((s (make-string-output-stream)))
-                    (uiop:run-program "dpkg-query --showformat='${Package} ' --show" :output s)
-                    (get-output-stream-string s))))
-
-(defun package-exists (name)
-  (string= "install ok installed"
-           (let ((s (make-string-output-stream)))
-             (uiop:run-program (cat "dpkg-query --showformat='${Status}' --show " name) :output s :ignore-error-status t)
-             (get-output-stream-string s))))

@@ -14,7 +14,9 @@
   :depends-on (:cl-fuse-meta-fs :cl-ppcre :log4cl :cl-annot)
   :components ((:module "src"
                 :components
-                ((:file "dpkg-fs"))))
+                ((:file "dpkg-fs" :depends-on ("dir-content"))
+                 (:file "dir-content" :depends-on ("package"))
+                 (:file "package"))))
   :description "dpkg implementation for pkgfs"
   :long-description
   #.(with-open-file (stream (merge-pathnames
