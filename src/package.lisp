@@ -13,6 +13,9 @@
              (get-output-stream-string s))))
 
 (defun package-deps (name)
+  ;; @todo handle OR dependencies correctly, e.g. foo | bar
+  ;; means "use and install foo if possible, but use bar
+  ;; if it's already there".
   (mapcar
    #'(lambda (dep)
        (first (cl-ppcre:split " " dep)))
