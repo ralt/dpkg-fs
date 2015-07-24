@@ -1,6 +1,7 @@
 (in-package :dpkg-fs)
 
-(defgeneric dir-content (path type &key))
+(defgeneric dir-content (path type &key)
+  (:documentation "List a directory content."))
 
 (defmethod dir-content (path (type (eql :root)) &key)
   (unless path
