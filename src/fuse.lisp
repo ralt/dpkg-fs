@@ -32,7 +32,7 @@
 
 (defn symlink-target (list -> string) (split-path)
   (log:debug "symlink-target: ~A" split-path)
-  nil)
+  (symlink split-path :root))
 
 @export
 (defun main (args)

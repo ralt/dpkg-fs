@@ -21,7 +21,12 @@
   (unless path
     (return-from is-directory t))
   (cond ((member (first path) '("name" "version" "desc") :test #'string=) nil)
-        ((string= (first path) "deps") t)))
+        ((string= (first path) "deps") (is-directory (rest path) :deps))))
+
+(defmethod is-directory (path (type (eql :deps)) &key)
+  (unless path
+    (return-from is-directory t))
+  nil)
 
 (defmethod is-directory (path (type (eql :index)) &key)
   (unless path

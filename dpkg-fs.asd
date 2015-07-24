@@ -14,9 +14,10 @@
   :depends-on (:cl-fuse-meta-fs :cl-ppcre :log4cl :cl-annot)
   :components ((:module "src"
                 :components
-                ((:file "fuse" :depends-on ("dir-content" "is-directory"))
+                ((:file "fuse" :depends-on ("dir-content" "is-directory" "symlink"))
                  (:file "dir-content" :depends-on ("package"))
                  (:file "is-directory" :depends-on ("dpkg-fs"))
+                 (:file "symlink" :depends-on ("dpkg-fs"))
                  (:file "package" :depends-on ("dpkg-fs"))
                  (:file "dpkg-fs"))))
   :description "dpkg implementation for pkgfs"
