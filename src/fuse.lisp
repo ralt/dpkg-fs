@@ -20,9 +20,7 @@
 
 (defn directoryp (list -> boolean) (split-path)
   (log:debug "directoryp: ~A" split-path)
-  (unless split-path
-    (return-from directoryp t))
-  (not (string= (first split-path) "sync")))
+  (is-directory split-path :root))
 
 (defn file-read (list -> string) (split-path)
   (log:debug "file-read: ~A" split-path)
