@@ -16,7 +16,8 @@
                 :components
                 ((:file "dpkg-fs" :depends-on ("dir-content"))
                  (:file "dir-content" :depends-on ("package"))
-                 (:file "package"))))
+                 (:file "package" :depends-on ("macros"))
+                 (:file "macros"))))
   :description "dpkg implementation for pkgfs"
   :long-description
   #.(with-open-file (stream (merge-pathnames
