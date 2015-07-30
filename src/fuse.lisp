@@ -16,6 +16,7 @@
 
 (defn directory-content (list -> list) (split-path)
   (log:debug "directory-content: ~A" split-path)
+  ;; @todo return ENOENT when necessary
   (dir-content split-path :root))
 
 (defn directoryp (list -> boolean) (split-path)
@@ -29,11 +30,13 @@
 (defun file-open (path flags)
   (log:debug "file-open path: ~A" path)
   (log:debug "file-open flags: ~A" flags)
+  ;; @todo return ENOENT if the file doesn't exist
   0)
 
 (defun file-release (path flags)
   (log:debug "file-release path: ~A" path)
   (log:debug "file-release flags: ~A" flags)
+  ;; @todo find out what this is for
   0)
 
 (defun file-read (split-path size offset fh)
@@ -55,16 +58,19 @@
 
 (defun file-executable-p (path)
   (log:debug "file-executeable-p: ~A" path)
+  ;; @todo return t for sync/install/uninstall
   nil)
 
 (defun file-flush (path fh)
   (log:debug "file-flush path: ~A" path)
   (log:debug "file-flush fh: ~A" fh)
+  ;; @todo find out what this is for
   0)
 
 (defun mkdir (path mode)
   (log:debug "mkdir path: ~A" path)
   (log:debug "mkdir mode: ~A" mode)
+  ;; @todo implement search
   (- cl-fuse:error-EACCES))
 
 (defun unlink (path)
@@ -73,6 +79,7 @@
 
 (defun rmdir (path)
   (log:debug "rmdir: ~A" path)
+  ;; @todo implement search
   (- cl-fuse:error-EACCES))
 
 @export
