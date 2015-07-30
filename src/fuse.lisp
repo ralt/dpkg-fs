@@ -41,13 +41,19 @@
   (log:debug "file-read size: ~A" size)
   (log:debug "file-read offset: ~A" offset)
   (log:debug "file-read fh: ~A" fh)
-  (read-file split-path size offset fh :root))
+  (let* ((file-contents (read-file split-path :root))
+         (file-length (length file-contents)))
+    (subseq file-contents
+            offset
+            (if (> file-length (+ offset size))
+                (+ offset size)
+                file-length))))
 
 (defn file-size (list -> integer) (split-path)
   (log:debug "file-size: ~A" split-path)
-  0)
+  (length (read-file split-path :root)))
 
-(defun file-executeable-p (path)
+(defun file-executable-p (path)
   (log:debug "file-executeable-p: ~A" path)
   nil)
 
