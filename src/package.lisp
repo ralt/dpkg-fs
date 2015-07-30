@@ -1,16 +1,16 @@
 (in-package :dpkg-fs)
 
+(defun run (command)
+  (let ((s (make-string-output-stream)))
+    (uiop:run-program command :ignore-error-status t :output s)
+    (get-output-stream-string s)))
+
 (defn installed-packages (list) ()
-  (cl-ppcre:split " "
-                  (let ((s (make-string-output-stream)))
-                    (uiop:run-program "dpkg-query --showformat='${Package} ' --show" :output s)
-                    (get-output-stream-string s))))
+  (cl-ppcre:split " " (run "dpkg-query --showformat='${Package} ' --show")))
 
 (defn package-exists (string -> boolean) (name)
   (string= "install ok installed"
-           (let ((s (make-string-output-stream)))
-             (uiop:run-program (cat "dpkg-query --showformat='${Status}' --show " name) :output s :ignore-error-status t)
-             (get-output-stream-string s))))
+           (run (cat "dpkg-query --showformat='${Status}' --show " name))))
 
 (defn package-deps (string -> list) (name)
   ;; @todo handle OR dependencies correctly, e.g. foo | bar
@@ -21,7 +21,4 @@
        (first (cl-ppcre:split " " dep)))
    (cl-ppcre:split
     ", "
-    (let ((s (make-string-output-stream)))
-      (uiop:run-program (cat "dpkg-query --showformat='${Depends}' --show " name)
-                        :output s :ignore-error-status t)
-      (get-output-stream-string s)))))
+    (run (cat "dpkg-query --showformat='${Depends}' --show " name)))))
