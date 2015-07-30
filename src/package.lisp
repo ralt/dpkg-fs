@@ -22,3 +22,9 @@
    (cl-ppcre:split
     ", "
     (run (cat "dpkg-query --showformat='${Depends}' --show " name)))))
+
+(defn package-version (string -> string) (name)
+  (run (cat "dpkg-query --showformat='${Version}' --show " name)))
+
+(defn package-desc (string -> string) (name)
+  (run (cat "dpkg-query --showformat='${Description}' --show " name)))
