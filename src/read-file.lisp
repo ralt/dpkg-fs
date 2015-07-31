@@ -14,7 +14,22 @@
 apt-get update
 ")
 
-(defmethod read-file (path (type (eql :index)) &key))
+(defmethod read-file (path (type (eql :index)) &key)
+  (let ((folder (first path)))
+    (when (package-available folder)
+      (read-file (rest path) :package-index-info :package folder))))
+
+(defmethod read-file (path (type (eql :package-index-info)) &key package)
+  (let ((file (first path)))
+    (cond ((string= file "name") (read-file nil :package-name :package package))
+          ((string= file "version") (read-file nil :package-index-version :package package))
+          ((string= file "desc") (read-file nil :package-index-desc :package package)))))
+
+(defmethod read-file (path (type (eql :package-index-version)) &key package)
+  (format nil "~A~%" (package-index-version package)))
+
+(defmethod read-file (path (type (eql :package-index-desc)) &key package)
+  (format nil "~A~%" (package-index-desc package)))
 
 (defmethod read-file (path (type (eql :installed)) &key)
   (let ((folder (first path)))

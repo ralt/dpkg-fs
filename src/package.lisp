@@ -61,3 +61,15 @@
 
 (defn package-desc (string -> string) (name)
   (run (cat "dpkg-query --showformat='${Description}' --show " name)))
+
+(defn package-index-version (string -> string) (name)
+  (multiple-value-bind (_ matches)
+      (cl-ppcre:scan-to-strings "Version: (.*)" (run (cat "apt-cache show " name)))
+    (declare (ignore _))
+    (elt matches 0)))
+
+(defn package-index-desc (string -> string) (name)
+  (multiple-value-bind (_ matches)
+      (cl-ppcre:scan-to-strings "Description-\\w+:\\s(.*)" (run (cat "apt-cache show " name)))
+    (declare (ignore _))
+    (elt matches 0)))

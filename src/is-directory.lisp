@@ -17,6 +17,12 @@
   (when (package-exists (first path))
     (is-directory (rest path) :package-info)))
 
+(defmethod is-directory (path (type (eql :index)) &key)
+  (unless path
+    (return-from is-directory t))
+  (when (package-available (first path))
+    (is-directory (rest path) :package-info)))
+
 (defmethod is-directory (path (type (eql :package-info)) &key)
   (unless path
     (return-from is-directory t))
