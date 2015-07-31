@@ -27,3 +27,9 @@
   (unless path
     (return-from symlink nil))
   (cat "../../" (first path)))
+
+(defmethod symlink (path (type (eql :index)) &key)
+  (unless path
+    (return-from symlink nil))
+  (when (package-available (first path))
+    (symlink (rest path) :package-info)))

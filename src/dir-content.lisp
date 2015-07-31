@@ -26,4 +26,18 @@
   (unless path
     (return-from dir-content (package-deps package))))
 
-(defmethod dir-content (path (type (eql :index)) &key))
+(defmethod dir-content (path (type (eql :index)) &key)
+  (unless path
+    (return-from dir-content (all-packages)))
+  (when (package-available (first path))
+    (dir-content (rest path) :package-index-info :package (first path))))
+
+(defmethod dir-content (path (type (eql :package-index-info)) &key package)
+  (unless path
+    (return-from dir-content '("name" "version" "desc" "deps")))
+  (when (string= (first path) "deps")
+    (dir-content (rest path) :index-deps :package package)))
+
+(defmethod dir-content (path (type (eql :index-deps)) &key package)
+  (unless path
+    (return-from dir-content (package-index-deps package))))

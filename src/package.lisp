@@ -8,9 +8,18 @@
 (defn installed-packages (list) ()
   (cl-ppcre:split " " (run "dpkg-query --showformat='${Package} ' --show")))
 
+(defn all-packages (list) ()
+  (mapcar #'(lambda (item)
+              (first (cl-ppcre:split " " item)))
+          (cl-ppcre:split #\Newline (run "apt-cache search ."))))
+
 (defn package-exists (string -> boolean) (name)
   (string= "install ok installed"
            (run (cat "dpkg-query --showformat='${Status}' --show " name))))
+
+(defn package-available (string -> boolean) (name)
+  (> (length (cl-ppcre:split #\Newline (run (cat "apt-cache search " name))))
+     0))
 
 (defn package-deps (string -> list) (name)
   ;; @todo handle OR dependencies correctly, e.g. foo | bar
@@ -22,6 +31,30 @@
    (cl-ppcre:split
     ", "
     (run (cat "dpkg-query --showformat='${Depends}' --show " name)))))
+
+(defn package-index-deps (string -> list) (name)
+  ;; @todo handle OR dependencies, or virtual packages.
+  (remove-if #'is-empty-string
+             (mapcar
+              #'get-dependency
+              (remove-if-not #'is-depends-line
+                             (cl-ppcre:split #\Newline (run (cat "apt-cache depends " name)))))))
+
+(defn get-dependency (string -> string) (line)
+  (multiple-value-bind (_ name)
+      (cl-ppcre:scan-to-strings "^\\s+Depends:\\s+([a-zA-Z0-9-_.]+)$" line)
+    (declare (ignore _))
+    (if name
+        (elt name 0)
+        "")))
+
+(defn is-empty-string (string -> boolean) (str)
+  (string= str ""))
+
+(defn is-depends-line (string -> boolean) (line)
+  (if (cl-ppcre:scan "^\\s+Depends:.*$" line)
+      t
+      nil))
 
 (defn package-version (string -> string) (name)
   (run (cat "dpkg-query --showformat='${Version}' --show " name)))
