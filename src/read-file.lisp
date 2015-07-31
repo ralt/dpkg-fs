@@ -11,7 +11,7 @@
 
 (defmethod read-file (path (type (eql :sync)) &key)
   "#!/bin/bash
-sudo apt-get update
+apt-get update
 ")
 
 (defmethod read-file (path (type (eql :index)) &key)
@@ -28,7 +28,7 @@ sudo apt-get update
 
 (defmethod read-file (path (type (eql :package-install)) &key package)
   (format nil "#!/bin/bash
-sudo apt-get install ~A
+apt-get install ~A
 " package))
 
 (defmethod read-file (path (type (eql :package-index-version)) &key package)
@@ -51,7 +51,7 @@ sudo apt-get install ~A
 
 (defmethod read-file (path (type (eql :package-info)) &key package)
   (format nil "#!/bin/bash
-sudo apt-get remove ~A
+apt-get remove ~A
 " package))
 
 (defmethod read-file (path (type (eql :package-name)) &key package)

@@ -85,7 +85,7 @@
 (defun main (args)
   (log:config :debug)
   (log:debug "fuse-run")
-  (cl-fuse:fuse-run `("none" ,(second args) "-d")
+  (cl-fuse:fuse-run `("pkgfs" ,(second args) "-oallow_other")
                     :directory-content 'directory-content
                     :directoryp 'directoryp
                     :symlink-target 'symlink-target
