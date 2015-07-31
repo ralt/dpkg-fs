@@ -58,8 +58,7 @@
 
 (defun file-executable-p (path)
   (log:debug "file-executeable-p: ~A" path)
-  ;; @todo return t for sync/install/uninstall
-  nil)
+  (execute-file path :root))
 
 (defun file-flush (path fh)
   (log:debug "file-flush path: ~A" path)
