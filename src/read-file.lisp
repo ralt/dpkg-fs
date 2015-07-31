@@ -11,7 +11,7 @@
 
 (defmethod read-file (path (type (eql :sync)) &key)
   "#!/bin/bash
-apt-get update
+sudo apt-get update
 ")
 
 (defmethod read-file (path (type (eql :index)) &key)
@@ -23,7 +23,13 @@ apt-get update
   (let ((file (first path)))
     (cond ((string= file "name") (read-file nil :package-name :package package))
           ((string= file "version") (read-file nil :package-index-version :package package))
-          ((string= file "desc") (read-file nil :package-index-desc :package package)))))
+          ((string= file "desc") (read-file nil :package-index-desc :package package))
+          ((string= file "install") (read-file nil :package-install :package package)))))
+
+(defmethod read-file (path (type (eql :package-install)) &key package)
+  (format nil "#!/bin/bash
+sudo apt-get install ~A
+" package))
 
 (defmethod read-file (path (type (eql :package-index-version)) &key package)
   (format nil "~A~%" (package-index-version package)))
@@ -40,7 +46,13 @@ apt-get update
   (let ((file (first path)))
     (cond ((string= file "name") (read-file nil :package-name :package package))
           ((string= file "version") (read-file nil :package-version :package package))
-          ((string= file "desc") (read-file nil :package-desc :package package)))))
+          ((string= file "desc") (read-file nil :package-desc :package package))
+          ((string= file "uninstall") (read-file nil :package-uninstall :package package)))))
+
+(defmethod read-file (path (type (eql :package-info)) &key package)
+  (format nil "#!/bin/bash
+sudo apt-get remove ~A
+" package))
 
 (defmethod read-file (path (type (eql :package-name)) &key package)
   (format nil "~A~%" package))
