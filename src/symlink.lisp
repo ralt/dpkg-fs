@@ -21,7 +21,7 @@
   (unless path
     (return-from symlink nil))
   (cond ((member (first path) '("name" "version" "description") :test #'string=) nil)
-        ((string= (first path) "deps") (symlink (rest path) :deps))))
+        ((string= (first path) "dependencies") (symlink (rest path) :deps))))
 
 (defmethod symlink (path (type (eql :deps)) &key)
   (unless path

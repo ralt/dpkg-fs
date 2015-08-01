@@ -18,8 +18,8 @@
 
 (defmethod dir-content (path (type (eql :package-info)) &key package)
   (unless path
-    (return-from dir-content '("name" "version" "description" "deps" "uninstall" "files")))
-  (when (string= (first path) "deps")
+    (return-from dir-content '("name" "version" "description" "dependencies" "uninstall" "files")))
+  (when (string= (first path) "dependencies")
     (dir-content (rest path) :deps :package package)))
 
 (defmethod dir-content (path (type (eql :deps)) &key package)
@@ -34,7 +34,7 @@
 
 (defmethod dir-content (path (type (eql :package-index-info)) &key package)
   (unless path
-    (return-from dir-content '("name" "version" "description" "deps" "install")))
+    (return-from dir-content '("name" "version" "description" "dependencies" "install")))
   (when (string= (first path) "deps")
     (dir-content (rest path) :index-deps :package package)))
 
