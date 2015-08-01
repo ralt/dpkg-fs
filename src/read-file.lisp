@@ -7,7 +7,8 @@
   (let ((file (first path)))
     (cond ((string= file "installed") (read-file (rest path) :installed))
           ((string= file "index") (read-file (rest path) :index))
-          ((string= file "sync") (read-file (rest path) :sync)))))
+          ((string= file "sync") (read-file (rest path) :sync))
+          ((string= file "moo") (run "apt-get moo")))))
 
 (defmethod read-file (path (type (eql :sync)) &key)
   "#!/bin/bash

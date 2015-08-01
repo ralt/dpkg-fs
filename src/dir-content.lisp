@@ -18,7 +18,7 @@
 
 (defmethod dir-content (path (type (eql :package-info)) &key package)
   (unless path
-    (return-from dir-content '("name" "version" "description" "deps" "uninstall")))
+    (return-from dir-content '("name" "version" "description" "deps" "uninstall" "files")))
   (when (string= (first path) "deps")
     (dir-content (rest path) :deps :package package)))
 
