@@ -26,7 +26,7 @@
 (defmethod is-directory (path (type (eql :package-info)) &key)
   (unless path
     (return-from is-directory t))
-  (cond ((member (first path) '("name" "version" "desc" "install" "uninstall") :test #'string=) nil)
+  (cond ((member (first path) '("name" "version" "description" "install" "uninstall") :test #'string=) nil)
         ((string= (first path) "deps") (is-directory (rest path) :deps))))
 
 (defmethod is-directory (path (type (eql :deps)) &key)

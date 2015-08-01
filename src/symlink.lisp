@@ -20,7 +20,7 @@
 (defmethod symlink (path (type (eql :package-info)) &key)
   (unless path
     (return-from symlink nil))
-  (cond ((member (first path) '("name" "version" "desc") :test #'string=) nil)
+  (cond ((member (first path) '("name" "version" "description") :test #'string=) nil)
         ((string= (first path) "deps") (symlink (rest path) :deps))))
 
 (defmethod symlink (path (type (eql :deps)) &key)
