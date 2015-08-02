@@ -5,6 +5,9 @@
     (uiop:run-program command :ignore-error-status t :output s)
     (get-output-stream-string s)))
 
+(defun join (list delimiter)
+  (format nil (cat "~{~A~^" delimiter "~}") list))
+
 (defn installed-packages (list) ()
   (cl-ppcre:split " " (run "dpkg-query --showformat='${Package} ' --show")))
 
@@ -73,3 +76,28 @@
       (cl-ppcre:scan-to-strings "Description-\\w+:\\s(.*)" (run (cat "apt-cache show " name)))
     (declare (ignore _))
     (elt matches 0)))
+
+(defn package-files (string -> hash-table) (name)
+  "Returns a hash table of this form (using pseudo-JSON):
+{
+    '/usr': ['share'],
+    '/usr/share': ['foo'],
+    '/usr/share/foo': ['bar', 'baz']
+}
+
+This way, getting the list of files in a folder is very simple
+with the right key."
+  (let ((files (make-hash-table :test #'equal)))
+    (loop
+       :for file in
+       ;; The first is always "/.", so ignore it
+       (rest
+        (cl-ppcre:split #\Newline (run (cat "dpkg -L " name))))
+       :when (is-dir (sb-posix:stat-mode (sb-posix:stat file)))
+       :do (setf (gethash file files) (or (gethash file files)
+                                          nil))
+       :do (let* ((split-path (cl-ppcre:split #\/ file))
+                  (folder (join (butlast split-path) "/"))
+                  (file (first (last split-path))))
+             (push file (gethash (if (string= folder "") "/" folder) files))))
+    files))

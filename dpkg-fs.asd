@@ -20,13 +20,17 @@
                                             "read-file"
                                             "execute-file"))
                  (:file "dir-content" :depends-on ("package"
-                                                   "dpkg-fs"))
-                 (:file "is-directory" :depends-on ("dpkg-fs"))
+                                                   "dpkg-fs"
+                                                   "files"))
+                 (:file "is-directory" :depends-on ("dpkg-fs"
+                                                    "files"))
                  (:file "symlink" :depends-on ("dpkg-fs"))
                  (:file "read-file" :depends-on ("package"
                                                  "dpkg-fs"))
                  (:file "execute-file" :depends-on ("dpkg-fs"))
-                 (:file "package" :depends-on ("dpkg-fs"))
+                 (:file "package" :depends-on ("dpkg-fs"
+                                               "files"))
+                 (:file "files" :depends-on ("dpkg-fs"))
                  (:file "dpkg-fs"))))
   :description "dpkg implementation for pkgfs"
   :long-description

@@ -19,12 +19,19 @@
 (defmethod dir-content (path (type (eql :package-info)) &key package)
   (unless path
     (return-from dir-content '("name" "version" "description" "dependencies" "uninstall" "files")))
-  (when (string= (first path) "dependencies")
-    (dir-content (rest path) :deps :package package)))
+  (cond ((string= (first path) "dependencies") (dir-content (rest path)
+                                                            :deps
+                                                            :package package))
+        ((string= (first path) "files") (dir-content (rest path)
+                                                     :files
+                                                     :package package))))
 
 (defmethod dir-content (path (type (eql :deps)) &key package)
   (unless path
     (return-from dir-content (package-deps package))))
+
+(defmethod dir-content (path (type (eql :files)) &key package)
+  (gethash (cat "/" (join path "/")) (package-files package)))
 
 (defmethod dir-content (path (type (eql :index)) &key)
   (unless path

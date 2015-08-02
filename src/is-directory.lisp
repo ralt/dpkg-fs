@@ -21,20 +21,21 @@
   (unless path
     (return-from is-directory t))
   (when (package-available (first path))
-    (is-directory (rest path) :package-info)))
+    (is-directory (rest path) :package-info :package (first path))))
 
-(defmethod is-directory (path (type (eql :package-info)) &key)
+(defmethod is-directory (path (type (eql :package-info)) &key package)
   (unless path
     (return-from is-directory t))
   (cond ((member (first path) '("name" "version" "description" "install" "uninstall") :test #'string=) nil)
         ((string= (first path) "dependencies") (is-directory (rest path) :deps))
-        ((string= (first path) "files") (is-directory (rest path) :files))))
+        ((string= (first path) "files") (is-directory (rest path) :files :package package))))
 
 (defmethod is-directory (path (type (eql :deps)) &key)
   (unless path
     (return-from is-directory t))
   nil)
 
-(defmethod is-directory (path (type (eql :files)) &key)
+(defmethod is-directory (path (type (eql :files)) &key package)
   (unless path
-    (return-from is-directory t)))
+    (return-from is-directory t))
+  (is-dir (sb-posix:stat-mode (sb-posix:stat (cat "/" (join path "/"))))))
