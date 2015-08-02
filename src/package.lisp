@@ -80,6 +80,7 @@
 (defn package-files (string -> hash-table) (name)
   "Returns a hash table of this form (using pseudo-JSON):
 {
+    '/': ['usr'],
     '/usr': ['share'],
     '/usr/share': ['foo'],
     '/usr/share/foo': ['bar', 'baz']
