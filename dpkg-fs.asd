@@ -11,7 +11,7 @@
   :version "0.1"
   :author "Florian Margaine <florian@margaine.com>"
   :license "MIT License"
-  :depends-on (:cl-fuse-meta-fs :cl-ppcre :log4cl :cl-annot)
+  :depends-on (:cl-fuse-meta-fs :cl-ppcre :log4cl :cl-annot :local-time)
   :components ((:module "src"
                 :components
                 ((:file "fuse" :depends-on ("dir-content"
@@ -32,6 +32,7 @@
                  (:file "package" :depends-on ("dpkg-fs"
                                                "files"))
                  (:file "files" :depends-on ("dpkg-fs"))
+                 (:file "cache" :depends-on ("dpkg-fs"))
                  (:file "dpkg-fs"))))
   :description "dpkg implementation for pkgfs"
   :long-description
