@@ -19,7 +19,7 @@
 (defmethod execute-file (path (type (eql :package-index-info)) &key package)
   (unless path
     (return-from execute-file nil))
-  (string= (first path) "install"))
+  (and (= (length path) 1) (string= (first path) "install")))
 
 (defmethod execute-file (path (type (eql :installed)) &key)
   (unless path
@@ -30,4 +30,4 @@
 (defmethod execute-file (path (type (eql :package-info)) &key package)
   (unless path
     (return-from execute-file nil))
-  (string= (first path) "uninstall"))
+  (and (= (length path) 1) (string= (first path) "uninstall")))
