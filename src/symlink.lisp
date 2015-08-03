@@ -21,7 +21,15 @@
   (unless path
     (return-from symlink nil))
   (cond ((member (first path) '("name" "version" "description") :test #'string=) nil)
-        ((string= (first path) "dependencies") (symlink (rest path) :deps))))
+        ((string= (first path) "dependencies") (symlink (rest path) :deps))
+        ((string= (first path) "files") (symlink (rest path) :files))))
+
+(defmethod symlink (path (type (eql :files)) &key)
+  (unless path
+    (return-from symlink nil))
+  (let ((full-path (cat "/" (join path "/"))))
+    (unless (is-dir (sb-posix:stat-mode (sb-posix:stat full-path)))
+      full-path)))
 
 (defmethod symlink (path (type (eql :deps)) &key)
   (unless path

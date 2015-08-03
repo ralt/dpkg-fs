@@ -48,11 +48,7 @@ apt-get install ~A
     (cond ((string= file "name") (read-file nil :package-name :package package))
           ((string= file "version") (read-file nil :package-version :package package))
           ((string= file "description") (read-file nil :package-desc :package package))
-          ((string= file "uninstall") (read-file nil :package-uninstall :package package))
-          ((string= file "files") (read-file (rest path) :package-files :package package)))))
-
-(defmethod read-file (path (type (eql :package-files)) &key package)
-  (alexandria:read-file-into-string (cat "/" (join path "/"))))
+          ((string= file "uninstall") (read-file nil :package-uninstall :package package)))))
 
 (defmethod read-file (path (type (eql :package-info)) &key package)
   (format nil "#!/bin/bash

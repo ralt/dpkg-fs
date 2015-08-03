@@ -24,7 +24,8 @@
                                                    "files"))
                  (:file "is-directory" :depends-on ("dpkg-fs"
                                                     "files"))
-                 (:file "symlink" :depends-on ("dpkg-fs"))
+                 (:file "symlink" :depends-on ("dpkg-fs"
+                                               "files"))
                  (:file "read-file" :depends-on ("package"
                                                  "dpkg-fs"))
                  (:file "execute-file" :depends-on ("dpkg-fs"))
