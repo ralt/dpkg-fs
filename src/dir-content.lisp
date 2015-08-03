@@ -11,10 +11,12 @@
           ((string= folder "index") (dir-content (rest path) :index)))))
 
 (defmethod dir-content (path (type (eql :installed)) &key)
-  (unless path
-    (return-from dir-content (installed-packages)))
-  (when (package-exists (first path))
-    (dir-content (rest path) :package-info :package (first path))))
+  (use-dpkg-cache
+      `("dir-content-installed" ,@path)
+    (unless path
+      (return-from dir-content (installed-packages)))
+    (when (package-exists (first path))
+      (dir-content (rest path) :package-info :package (first path)))))
 
 (defmethod dir-content (path (type (eql :package-info)) &key package)
   (unless path
@@ -34,10 +36,12 @@
   (gethash (cat "/" (join path "/")) (package-files package)))
 
 (defmethod dir-content (path (type (eql :index)) &key)
-  (unless path
-    (return-from dir-content (all-packages)))
-  (when (package-available (first path))
-    (dir-content (rest path) :package-index-info :package (first path))))
+  (use-apt-cache
+      `("dir-content-index" ,@path)
+    (unless path
+      (return-from dir-content (all-packages)))
+    (when (package-available (first path))
+      (dir-content (rest path) :package-index-info :package (first path)))))
 
 (defmethod dir-content (path (type (eql :package-index-info)) &key package)
   (unless path

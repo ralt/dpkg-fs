@@ -27,6 +27,7 @@ for readability):
 
 |#
 
+;; A macro to avoid scope issues.
 (defmacro cache-set (cache key value)
   `(progn
      (setf (getf ,cache ,key) (list
@@ -35,9 +36,13 @@ for readability):
                                :value ,value))
      ,value))
 
+(defn hash (list -> keyword) (list)
+      (intern (format nil "~{~A~^-~}" list) :keyword))
+
 (defmacro define-cache (name cache cache-file)
-  `(defun ,name (key fn &rest args)
-     (let ((cache-entry (getf ,cache key)))
+  `(defun ,name (path fn &rest args)
+     (let* ((key (hash path))
+            (cache-entry (getf ,cache key)))
        (unless cache-entry
          (return-from ,name (cache-set ,cache key (apply fn args))))
        (let ((mtime (sb-posix:stat-mtime (sb-posix:stat ,cache-file))))
@@ -53,3 +58,9 @@ for readability):
 
 (define-cache apt-cache *apt-cache* *apt-cache-file*)
 (define-cache dpkg-cache *dpkg-cache* *dpkg-cache-file*)
+
+(defmacro use-apt-cache (key &body body)
+  `(apt-cache ,key #'(lambda () ,@body)))
+
+(defmacro use-dpkg-cache (key &body body)
+  `(dpkg-cache ,key #'(lambda () ,@body)))

@@ -11,10 +11,12 @@
           ((string= folder "index") (symlink (rest path) :index)))))
 
 (defmethod symlink (path (type (eql :installed)) &key)
-  (unless path
-    (return-from symlink nil))
-  (when (package-exists (first path))
-    (symlink (rest path) :package-info)))
+  (use-dpkg-cache
+      `("symlink" ,@path)
+    (unless path
+      (return-from symlink nil))
+    (when (package-exists (first path))
+      (symlink (rest path) :package-info))))
 
 (defmethod symlink (path (type (eql :package-info)) &key)
   (unless path
@@ -35,7 +37,9 @@
   (cat "../../" (first path)))
 
 (defmethod symlink (path (type (eql :index)) &key)
-  (unless path
-    (return-from symlink nil))
-  (when (package-available (first path))
-    (symlink (rest path) :package-info)))
+  (use-apt-cache
+      `("symlink" ,@path)
+    (unless path
+      (return-from symlink nil))
+    (when (package-available (first path))
+      (symlink (rest path) :package-info))))

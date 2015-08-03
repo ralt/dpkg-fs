@@ -21,14 +21,19 @@
                                             "execute-file"))
                  (:file "dir-content" :depends-on ("package"
                                                    "dpkg-fs"
-                                                   "files"))
+                                                   "files"
+                                                   "cache"))
                  (:file "is-directory" :depends-on ("dpkg-fs"
-                                                    "files"))
+                                                    "files"
+                                                    "cache"))
                  (:file "symlink" :depends-on ("dpkg-fs"
-                                               "files"))
+                                               "files"
+                                               "cache"))
                  (:file "read-file" :depends-on ("package"
-                                                 "dpkg-fs"))
-                 (:file "execute-file" :depends-on ("dpkg-fs"))
+                                                 "dpkg-fs"
+                                                 "cache"))
+                 (:file "execute-file" :depends-on ("dpkg-fs"
+                                                    "cache"))
                  (:file "package" :depends-on ("dpkg-fs"
                                                "files"))
                  (:file "files" :depends-on ("dpkg-fs"))
