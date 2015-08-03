@@ -8,8 +8,7 @@
     (return-from is-directory t))
   (let ((folder (first path)))
     (cond ((string= folder "installed") (is-directory (rest path) :installed))
-          ((string= folder "index") (is-directory (rest path) :index))
-          (t nil))))
+          ((string= folder "index") (is-directory (rest path) :index)))))
 
 (defmethod is-directory (path (type (eql :installed)) &key)
   (unless path
@@ -27,13 +26,11 @@
   (unless path
     (return-from is-directory t))
   (cond ((string= (first path) "dependencies") (is-directory (rest path) :deps))
-        ((string= (first path) "files") (is-directory (rest path) :files :package package))
-        (t nil)))
+        ((string= (first path) "files") (is-directory (rest path) :files :package package))))
 
 (defmethod is-directory (path (type (eql :deps)) &key)
   (unless path
-    (return-from is-directory t))
-  nil)
+    (return-from is-directory t)))
 
 (defmethod is-directory (path (type (eql :files)) &key package)
   (unless path

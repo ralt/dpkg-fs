@@ -8,8 +8,7 @@
     (return-from symlink nil))
   (let ((folder (first path)))
     (cond ((string= folder "installed") (symlink (rest path) :installed))
-          ((string= folder "index") (symlink (rest path) :index))
-          ((string= folder "sync") nil))))
+          ((string= folder "index") (symlink (rest path) :index)))))
 
 (defmethod symlink (path (type (eql :installed)) &key)
   (unless path
@@ -20,8 +19,7 @@
 (defmethod symlink (path (type (eql :package-info)) &key)
   (unless path
     (return-from symlink nil))
-  (cond ((member (first path) '("name" "version" "description") :test #'string=) nil)
-        ((string= (first path) "dependencies") (symlink (rest path) :deps))
+  (cond ((string= (first path) "dependencies") (symlink (rest path) :deps))
         ((string= (first path) "files") (symlink (rest path) :files))))
 
 (defmethod symlink (path (type (eql :files)) &key)
