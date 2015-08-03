@@ -61,7 +61,7 @@ apt-get install ~A
 (defmethod read-file (path (type (eql :package-size)) &key package)
   (format nil "~A~%" (package-size package)))
 
-(defmethod read-file (path (type (eql :package-info)) &key package)
+(defmethod read-file (path (type (eql :package-uninstall)) &key package)
   (format nil "#!/bin/bash
 apt-get remove ~A
 " package))
