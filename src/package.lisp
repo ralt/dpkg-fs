@@ -17,8 +17,9 @@
           (cl-ppcre:split #\Newline (run "apt-cache search ."))))
 
 (defn package-exists (string -> boolean) (name)
-  (string= "install ok installed"
-           (run (cat "dpkg-query --showformat='${Status}' --show " name))))
+  (= 0
+     (search "install ok installed"
+             (run (cat "dpkg-query --showformat='${Status}' --show " name)))))
 
 (defn package-available (string -> boolean) (name)
   (> (length (cl-ppcre:split #\Newline (run (cat "apt-cache search " name))))
