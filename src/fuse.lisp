@@ -16,8 +16,7 @@
 
 (defn directory-content (list -> list) (split-path)
   (log:debug "directory-content: ~A" split-path)
-  ;; @todo return ENOENT when necessary
-  (dir-content split-path :root))
+  (or (dir-content split-path :root) (- cl-fuse:error-ENOENT)))
 
 (defn directoryp (list -> boolean) (split-path)
   (log:debug "directoryp: ~A" split-path)
@@ -30,8 +29,9 @@
 (defun file-open (path flags)
   (log:debug "file-open path: ~A" path)
   (log:debug "file-open flags: ~A" flags)
-  ;; @todo return ENOENT if the file doesn't exist
-  0)
+  (if (read-file path :root)
+      0
+      (- cl-fuse:error-ENOENT)))
 
 (defun file-release (path flags)
   (log:debug "file-release path: ~A" path)
