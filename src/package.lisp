@@ -102,3 +102,9 @@ with the right key."
                   (file (first (last split-path))))
              (push file (gethash (if (string= folder "") "/" folder) files))))
     files))
+
+(defn package-size (string -> integer) (name)
+  (multiple-value-bind (_ matches)
+      (cl-ppcre:scan-to-strings "Installed-Size: (\\d+)" (run (cat "apt-cache show " name)))
+    (declare (ignore _))
+    (parse-integer (elt matches 0))))
