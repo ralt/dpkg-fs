@@ -16,10 +16,11 @@
 apt-get update
 ")
 
+(defvar *upgrade-script* (alexandria:read-file-into-string
+                          (asdf:system-relative-pathname :dpkg-fs "scripts/upgrade")))
+
 (defmethod read-file (path (type (eql :upgrade)) &key)
-  "#!/bin/bash
-apt-get upgrade
-")
+  *upgrade-script*)
 
 (defmethod read-file (path (type (eql :index)) &key)
   (let ((folder (first path)))

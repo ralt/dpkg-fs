@@ -1,0 +1,22 @@
+#!/bin/bash
+
+OPTS=`getopt -o y --long yes -n 'parse-options' -- "$@"`
+
+if [ $? != 0 ]; then
+    echo "Failed parsing options." >&2
+    exit 1
+fi
+
+echo "$OPTS"
+eval set -- "$OPTS"
+
+YES=""
+
+while true; do
+    case "$1" in
+        -y | --yes ) YES="--yes"; shift ;;
+        * ) break ;;
+    esac
+done
+
+apt-get upgrade $YES
