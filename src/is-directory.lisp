@@ -9,7 +9,7 @@
   (let ((folder (first path)))
     (cond ((string= folder "installed") (is-directory (rest path) :installed))
           ((string= folder "index") (is-directory (rest path) :index))
-          ((string= folder "sync") nil))))
+          (t nil))))
 
 (defmethod is-directory (path (type (eql :installed)) &key)
   (unless path

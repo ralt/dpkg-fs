@@ -6,7 +6,7 @@
 (defmethod execute-file (path (type (eql :root)) &key)
   (unless path
     (return-from execute-file nil))
-  (cond ((string= (first path) "sync") t)
+  (cond ((member (first path) '("sync" "upgrade") :test #'string=) t)
         ((string= (first path) "installed") (execute-file (rest path) :installed))
         ((string= (first path) "index") (execute-file (rest path) :index))))
 

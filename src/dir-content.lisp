@@ -5,7 +5,7 @@
 
 (defmethod dir-content (path (type (eql :root)) &key)
   (unless path
-    (return-from dir-content '("installed" "index" "sync")))
+    (return-from dir-content '("installed" "index" "sync" "upgrade")))
   (let ((folder (first path)))
     (cond ((string= folder "installed") (dir-content (rest path) :installed))
           ((string= folder "index") (dir-content (rest path) :index)))))

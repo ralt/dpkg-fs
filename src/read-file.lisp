@@ -7,12 +7,18 @@
   (let ((file (first path)))
     (cond ((string= file "installed") (read-file (rest path) :installed))
           ((string= file "index") (read-file (rest path) :index))
-          ((string= file "sync") (read-file (rest path) :sync))
+          ((string= file "sync") (read-file nil :sync))
+          ((string= file "upgrade") (read-file nil :upgrade))
           ((string= file "moo") (run "apt-get moo")))))
 
 (defmethod read-file (path (type (eql :sync)) &key)
   "#!/bin/bash
 apt-get update
+")
+
+(defmethod read-file (path (type (eql :upgrade)) &key)
+  "#!/bin/bash
+apt-get upgrade
 ")
 
 (defmethod read-file (path (type (eql :index)) &key)
