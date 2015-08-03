@@ -16,7 +16,7 @@
 
 (defn directory-content (list -> list) (split-path)
   (log:debug "directory-content: ~A" split-path)
-  (or (dir-content split-path :root) (- cl-fuse:error-ENOENT)))
+  (dir-content split-path :root))
 
 (defn directoryp (list -> boolean) (split-path)
   (log:debug "directoryp: ~A" split-path)
