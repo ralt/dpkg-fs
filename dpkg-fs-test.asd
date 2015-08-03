@@ -11,7 +11,9 @@
   :author ""
   :license ""
   :depends-on (:dpkg-fs
-               :prove)
+               :prove
+               :bordeaux-threads
+               :cl-fad)
   :components ((:module "t"
                 :components
                 ((:test-file "dpkg-fs"))))
