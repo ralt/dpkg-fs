@@ -9,15 +9,32 @@
   (format nil (cat "~{~A~^" delimiter "~}") list))
 
 (defn installed-packages (list) ()
-  (mapcar #'(lambda (line)
-              (first (last (cl-ppcre:split " " line))))
-          (remove-if-not #'package-line-is-installed
-                         (cl-ppcre:split #\Newline (run "dpkg-query --showformat='${Status} ${Package}\\n' --show")))))
+  (let ((installed-packages
+         (mapcar #'(lambda (line)
+                     (first (last (cl-ppcre:split " " line))))
+                 (remove-if-not #'package-line-is-installed
+                                (cl-ppcre:split #\Newline (run "dpkg-query --showformat='${Status} ${Package}\\n' --show"))))))
+    ;; Now, fill in the dpkg-cache for is-directory.
+    ;; Since we know the packages exist, we can already add them to the cache.
+    ;; This has the added benefit of avoiding a call to dpkg-query for
+    ;; every folder to check if it's a directory.
+    ;; In practice, it reduces the time for an "ls /pkg/installed"
+    ;; from ~1 minute to 1 second on a cold cache.
+    (dolist (package installed-packages)
+      (with-dpkg-cache ("is-directory-installed" (list package))
+        t))
+    installed-packages))
 
 (defn all-packages (list) ()
-  (mapcar #'(lambda (item)
-              (first (cl-ppcre:split " " item)))
-          (cl-ppcre:split #\Newline (run "apt-cache search ."))))
+  (let ((all-packages
+         (mapcar #'(lambda (item)
+                     (first (cl-ppcre:split " " item)))
+                 (cl-ppcre:split #\Newline (run "apt-cache search .")))))
+    ;; Same as in installed-packages, fill in the is-directory cache.
+    (dolist (package all-packages)
+      (with-apt-cache ("is-directory-index" (list package))
+        t))
+    all-packages))
 
 (defn package-line-is-installed (string -> boolean) (line)
   (= 0
