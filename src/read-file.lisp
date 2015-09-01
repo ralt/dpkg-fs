@@ -23,8 +23,7 @@ apt-get update
   *upgrade-script*)
 
 (defmethod read-file (path (type (eql :index)) &key)
-  (use-apt-cache
-      `("read-file-index" ,@path)
+  (with-apt-cache ("read-file-index" path)
     (let ((folder (first path)))
       (when (package-available folder)
         (read-file (rest path) :package-index-info :package folder)))))
@@ -49,8 +48,7 @@ apt-get install ~A
   (format nil "~A~%" (package-index-desc package)))
 
 (defmethod read-file (path (type (eql :installed)) &key)
-  (use-dpkg-cache
-      `("read-file-installed" ,@path)
+  (with-dpkg-cache ("read-file-installed" path)
     (let ((folder (first path)))
       (when (package-exists folder)
         (read-file (rest path) :package-info :package folder)))))

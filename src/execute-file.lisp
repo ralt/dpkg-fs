@@ -11,8 +11,7 @@
         ((string= (first path) "index") (execute-file (rest path) :index))))
 
 (defmethod execute-file (path (type (eql :index)) &key)
-  (use-apt-cache
-      `("execute-index" ,@path)
+  (with-apt-cache ("execute-index" path)
     (unless path
       (return-from execute-file nil))
     (when (package-available (first path))
@@ -24,8 +23,7 @@
   (and (= (length path) 1) (string= (first path) "install")))
 
 (defmethod execute-file (path (type (eql :installed)) &key)
-  (use-dpkg-cache
-      `("execute-installed" ,@path)
+  (with-dpkg-cache ("execute-installed" path)
     (unless path
       (return-from execute-file nil))
     (when (package-exists (first path))

@@ -9,17 +9,23 @@
   (format nil (cat "~{~A~^" delimiter "~}") list))
 
 (defn installed-packages (list) ()
-  (cl-ppcre:split " " (run "dpkg-query --showformat='${Package} ' --show")))
+  (mapcar #'(lambda (line)
+              (first (last (cl-ppcre:split " " line))))
+          (remove-if-not #'package-line-is-installed
+                         (cl-ppcre:split #\Newline (run "dpkg-query --showformat='${Status} ${Package}\\n' --show")))))
 
 (defn all-packages (list) ()
   (mapcar #'(lambda (item)
               (first (cl-ppcre:split " " item)))
           (cl-ppcre:split #\Newline (run "apt-cache search ."))))
 
-(defn package-exists (string -> boolean) (name)
+(defn package-line-is-installed (string -> boolean) (line)
   (= 0
-     (search "install ok installed"
-             (run (cat "dpkg-query --showformat='${Status}' --show " name)))))
+     (or (search "install ok installed" line)
+         -1)))
+
+(defn package-exists (string -> boolean) (name)
+  (package-line-is-installed (run (cat "dpkg-query --showformat='${Status}' --show " name))))
 
 (defn package-available (string -> boolean) (name)
   (> (length (cl-ppcre:split #\Newline (run (cat "apt-cache search " name))))

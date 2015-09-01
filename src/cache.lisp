@@ -36,7 +36,9 @@ The cache itself is a property list, of the following form:
      ,value))
 
 (defn hash (list -> keyword) (list)
-      (intern (format nil "~{~A~^-~}" list) :keyword))
+      (intern (format nil "~A-~{~A~^-~}"
+                      (first list)
+                      (second list)) :keyword))
 
 (defmacro define-cache (name cache cache-file)
   `(defun ,name (path fn &rest args)
@@ -58,8 +60,8 @@ The cache itself is a property list, of the following form:
 (define-cache apt-cache *apt-cache* *apt-cache-file*)
 (define-cache dpkg-cache *dpkg-cache* *dpkg-cache-file*)
 
-(defmacro use-apt-cache (key &body body)
-  `(apt-cache ,key #'(lambda () ,@body)))
+(defmacro with-apt-cache (key &body body)
+  `(apt-cache (list ,(first key) ,(second key)) #'(lambda () ,@body)))
 
-(defmacro use-dpkg-cache (key &body body)
-  `(dpkg-cache ,key #'(lambda () ,@body)))
+(defmacro with-dpkg-cache (key &body body)
+  `(dpkg-cache (list ,(first key) ,(second key)) #'(lambda () ,@body)))

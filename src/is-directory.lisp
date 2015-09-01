@@ -11,16 +11,14 @@
           ((string= folder "index") (is-directory (rest path) :index)))))
 
 (defmethod is-directory (path (type (eql :installed)) &key)
-  (use-dpkg-cache
-      `("is-directory-installed" ,@path)
+  (with-dpkg-cache ("is-directory-installed" path)
     (unless path
       (return-from is-directory t))
     (when (package-exists (first path))
       (is-directory (rest path) :package-info))))
 
 (defmethod is-directory (path (type (eql :index)) &key)
-  (use-apt-cache
-      `("is-directory-index" ,@path)
+  (with-apt-cache ("is-directory-index" path)
     (unless path
       (return-from is-directory t))
     (when (package-available (first path))
