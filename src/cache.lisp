@@ -19,8 +19,7 @@ Basically, anytime the cache is fetched, it will first check the mtime
 of these files, and will refresh the cache if the last cache was
 before it.
 
-The cache itself is a property list, of the following form (in JSON
-for readability):
+The cache itself is a property list, of the following form:
 
 (:foo (:mtime 1234 :value "bar")
  :baz (:mtime 4321 :value "qux"))
