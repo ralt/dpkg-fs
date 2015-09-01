@@ -35,7 +35,8 @@
                  (:file "execute-file" :depends-on ("dpkg-fs"
                                                     "cache"))
                  (:file "package" :depends-on ("dpkg-fs"
-                                               "files"))
+                                               "files"
+                                               "cache"))
                  (:file "files" :depends-on ("dpkg-fs"))
                  (:file "cache" :depends-on ("dpkg-fs"))
                  (:file "dpkg-fs"))))
